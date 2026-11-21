@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>오늘 밤도 누나의 꿈이 예쁘길 🌙</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,400&family=Gowun+Batang:wght@400;700&family=Nanum+Myeongjo:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --sky-top: #070919;
+      --sky-mid: #121738;
+      --sky-bottom: #261b47;
+      --moon-core: #fff9e6;
+      --moon-glow: rgba(255, 236, 179, 0.55);
+      --pink-soft: #ff9ebb;
+      --pink-rose: #ff6b9d;
+      --gold-warm: #f6dca6;
+      --paper-cream: #fffaf4;
+      --paper-border: #ead2bd;
+      --ink-dark: #2c1e26;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 52%, var(--sky-bottom) 100%);
+      color: #fff6fa;
+      font-family: 'Gowun Batang', 'Nanum Myeongjo', serif;
+      user-select: none;
+    }
+
+    /* Fullscreen Particle & Star Canvas */
+    #nightCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Glowing Moon */
+    .moon-container {
+      position: fixed;
+      top: max(28px, env(safe-area-inset-top));
+      right: 26px;
+      width: 78px;
+      height: 78px;
+      z-index: 2;
+      pointer-events: none;
+      animation: moonFloat 7s ease-in-out infinite alternate;
+    }
+
+    .moon-halo {
+      position: absolute;
+      inset: -28px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 241, 194, 0.36) 0%, rgba(255, 182, 206, 0.14) 48%, transparent 72%);
+      animation: haloPulse 4.5s ease-in-out infinite alternate;
+    }
+
+    .moon-disc {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: radial-gradient(circle at 32% 30%, #ffffff 0%, #fff7db 48%, #f3d79b 100%);
+      box-shadow:
+        0 0 28px var(--moon-glow),
+        0 0 60px rgba(255, 224, 150, 0.35),
+        inset -10px -8px 18px rgba(212, 172, 102, 0.35);
+    }
+
+    .moon-disc::after {
+      content: "";
+      position: absolute;
+      top: 18px;
+      left: 22px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: rgba(226, 192, 130, 0.22);
+      box-shadow: 22px 14px 0 3px rgba(226, 192, 130, 0.16), 8px 28px 0 -2px rgba(226, 192, 130, 0.18);
+    }
+
+    @keyframes moonFloat {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(-7px); }
+    }
+
+    @keyframes haloPulse {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      100% { transform: scale(1.12); opacity: 1; }
+    }
+
+    /* Soft Drifting Clouds */
+    .clouds-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    .cloud {
+      position: absolute;
+      border-radius: 999px;
+      background: radial-gradient(ellipse at center, rgba(169, 148, 214, 0.16) 0%, rgba(114, 96, 168, 0.05) 60%, transparent 78%);
+      filter: blur(18px);
+    }
+
+    .cloud-1 {
+      width: 340px;
+      height: 95px;
+      top: 14%;
+      left: -120px;
+      animation: driftRight 34s linear infinite;
+    }
+
+    .cloud-2 {
+      width: 420px;
+      height: 115px;
+      top: 32%;
+      right: -160px;
+      animation: driftLeft 42s linear infinite;
+    }
+
+    .cloud-3 {
+      width: 360px;
+      height: 110px;
+      bottom: 12%;
+      left: -100px;
+      animation: driftRight 38s linear infinite;
+    }
+
+    @keyframes driftRight {
+      0% { transform: translateX(-40px); }
+      50% { transform: translateX(110px); }
+      100% { transform: translateX(-40px); }
+    }
+
+    @keyframes driftLeft {
+      0% { transform: translateX(40px); }
+      50% { transform: translateX(-110px); }
+      100% { transform: translateX(40px); }
+    }
+
+    /* Delicate Bottom Animated Night Flowers */
+    .garden-floor {
+      position: fixed;
+      bottom: -8px;
+      left: 0;
+      width: 100%;
+      height: 135px;
+      pointer-events: none;
+      z-index: 3;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 0 6px;
+      opacity: 0.92;
+    }
+
+    .flower-cluster {
+      width: 150px;
+      height: 130px;
+      overflow: visible;
+    }
+
+    .sway-slow {
+      transform-origin: bottom center;
+      animation: flowerSway 5.5s ease-in-out infinite alternate;
+    }
+
+    .sway-slow-delay {
+      transform-origin: bottom center;
+      animation: flowerSway 6.4s ease-in-out infinite alternate-reverse;
+    }
+
+    @keyframes flowerSway {
+      0% { transform: rotate(-3deg); }
+      100% { transform: rotate(3.5deg); }
+    }
+
+    /* Main Stage Layout */
+    .stage {
+      position: relative;
+      z-index: 5;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: max(20px, env(safe-area-inset-top)) 20px max(24px, env(safe-area-inset-bottom));
+    }
+
+    /* Top Concept Header */
+    .concept-header {
+      position: absolute;
+      top: max(36px, env(safe-area-inset-top));
+      left: 24px;
+      right: 112px;
+      text-align: left;
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .concept-header.fade-out {
+      opacity: 0;
+      transform: translateY(-10px);
+      pointer-events: none;
+    }
+
+    .concept-en {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 12px;
+      letter-spacing: 2.5px;
+      color: var(--gold-warm);
+      opacity: 0.85;
+      margin-bottom: 6px;
+    }
+
+    .concept-ko {
+      font-size: 19px;
+      font-weight: 700;
+      line-height: 1.45;
+      color: #fff6fa;
+      text-shadow: 0 2px 14px rgba(255, 158, 187, 0.35);
+      word-break: keep-all;
+    }
+
+    /* SCREEN 1: Romantic Interactive Envelope */
+    #envelope-view {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+
+    #envelope-view.hidden {
+      opacity: 0;
+      transform: scale(0.92) translateY(14px);
+      pointer-events: none;
+      position: absolute;
+    }
+
+    .envelope-wrapper {
+      position: relative;
+      width: 286px;
+      height: 192px;
+      cursor: pointer;
+      perspective: 1000px;
+      animation: envelopeHover 3.6s ease-in-out infinite alternate;
+      filter: drop-shadow(0 20px 35px rgba(4, 5, 18, 0.72));
+    }
+
+    @keyframes envelopeHover {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(-8px); }
+    }
+
+    .envelope-aura {
+      position: absolute;
+      inset: -24px;
+      border-radius: 36px;
+      background: radial-gradient(circle, rgba(255, 133, 179, 0.3) 0%, rgba(246, 220, 166, 0.12) 55%, transparent 75%);
+      filter: blur(14px);
+      animation: auraPulse 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes auraPulse {
+      0% { opacity: 0.65; transform: scale(0.96); }
+      100% { opacity: 1; transform: scale(1.05); }
+    }
+
+    /* Envelope Base */
+    .envelope-body {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(145deg, #f9e6ec 0%, #f1cfd9 100%);
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      overflow: hidden;
+    }
+
+    /* Letter Preview Inside Envelope */
+    .letter-peek {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: 12px;
+      height: 155px;
+      background: var(--paper-cream);
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+      box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.08);
+      transform: translateY(28px);
+      transition: transform 0.95s cubic-bezier(0.22, 1, 0.36, 1) 0.35s;
+      z-index: 2;
+    }
+
+    .letter-peek span {
+      font-size: 13px;
+      color: #8c5868;
+      letter-spacing: 0.04em;
+    }
+
+    .envelope-wrapper.opened .letter-peek {
+      transform: translateY(-58px);
+    }
+
+    /* Front Pocket Folds */
+    .pocket-left {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #f6d5df 0%, #eab9c8 100%);
+      clip-path: polygon(0 0, 54% 52%, 0 100%);
+      z-index: 3;
+    }
+
+    .pocket-right {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(225deg, #f6d5df 0%, #e7b3c3 100%);
+      clip-path: polygon(100% 0, 46% 52%, 100% 100%);
+      z-index: 3;
+    }
+
+    .pocket-bottom {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, #f8dce4 0%, #e5afc0 100%);
+      clip-path: polygon(0 100%, 50% 46%, 100% 100%);
+      z-index: 4;
+      border-top: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    /* Top Flap */
+    .envelope-flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 112px;
+      background: linear-gradient(180deg, #fcebf0 0%, #ecc0ce 100%);
+      clip-path: polygon(0 0, 100% 0, 50% 96%);
+      transform-origin: top center;
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.2s linear 0.35s;
+      z-index: 5;
+      border-radius: 16px 16px 0 0;
+    }
+
+    .envelope-wrapper.opened .envelope-flap {
+      transform: rotateX(180deg);
+      z-index: 1;
+    }
+
+    /* Wax Heart Seal */
+    .wax-seal {
+      position: absolute;
+      top: 76px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #ff7aa8 0%, #d9386a 65%, #9e1b44 100%);
+      box-shadow:
+        0 6px 16px rgba(158, 27, 68, 0.45),
+        inset 0 2px 4px rgba(255, 255, 255, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: #fff5f8;
+      z-index: 6;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      animation: sealBeat 2.2s ease-in-out infinite;
+    }
+
+    .envelope-wrapper.opened .wax-seal {
+      opacity: 0;
+      transform: translateX(-50%) scale(0.5);
+    }
+
+    @keyframes sealBeat {
+      0%, 100% { transform: translateX(-50%) scale(1); }
+      50% { transform: translateX(-50%) scale(1.09); }
+    }
+
+    .tap-prompt {
+      margin-top: 28px;
+      text-align: center;
+    }
+
+    .tap-prompt p {
+      font-size: 15.5px;
+      color: #ffeaf1;
+      letter-spacing: 0.03em;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .tap-prompt span {
+      display: inline-block;
+      margin-top: 6px;
+      font-size: 12.5px;
+      color: var(--gold-warm);
+      opacity: 0.85;
+      animation: fadePulse 2.2s ease-in-out infinite;
+    }
+
+    @keyframes fadePulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    /* SCREEN 2: Heartfelt Good-Night Letter Card */
+    #letter-view {
+      width: 100%;
+      max-width: 410px;
+      opacity: 0;
+      transform: translateY(28px) scale(0.95);
+      pointer-events: none;
+      position: absolute;
+      transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1), transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+      padding: 0 4px;
+    }
+
+    #letter-view.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+      position: relative;
+    }
+
+    .letter-paper {
+      position: relative;
+      width: 100%;
+      max-height: 76vh;
+      overflow-y: auto;
+      background: linear-gradient(180deg, #fffcf8 0%, #fdf4ec 100%);
+      color: var(--ink-dark);
+      border-radius: 24px;
+      padding: 28px 24px 24px;
+      border: 1px solid var(--paper-border);
+      box-shadow:
+        0 24px 55px rgba(5, 6, 20, 0.75),
+        0 0 32px rgba(255, 158, 187, 0.22),
+        inset 0 0 24px rgba(243, 215, 182, 0.35);
+      scrollbar-width: none;
+    }
+
+    .letter-paper::-webkit-scrollbar {
+      display: none;
+    }
+
+    .letter-ornament {
+      text-align: center;
+      font-size: 14px;
+      color: #c97a93;
+      letter-spacing: 6px;
+      margin-bottom: 14px;
+    }
+
+    .letter-body {
+      font-size: 15.2px;
+      line-height: 1.88;
+      color: #2f1f27;
+      white-space: pre-line;
+      word-break: keep-all;
+      letter-spacing: 0.015em;
+    }
+
+    .letter-line {
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.85s ease, transform 0.85s ease;
+    }
+
+    .letter-line.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .letter-signature {
+      margin-top: 14px;
+      text-align: right;
+      font-weight: 700;
+      font-size: 16px;
+      color: #9e3b5b;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+
+    .letter-signature.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .next-btn-wrap {
+      margin-top: 22px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+
+    .next-btn-wrap.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .goodnight-btn {
+      padding: 13px 28px;
+      border-radius: 999px;
+      border: 1px solid rgba(217, 56, 106, 0.35);
+      background: linear-gradient(135deg, #ff7aa8 0%, #d9386a 100%);
+      color: #fff;
+      font-family: 'Gowun Batang', serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(217, 56, 106, 0.35);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .goodnight-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* SCREEN 3: Final Glowing Heart Screen */
+    #final-view {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 24px;
+      opacity: 0;
+      transform: scale(0.92);
+      pointer-events: none;
+      transition: opacity 1.3s cubic-bezier(0.22, 1, 0.36, 1), transform 1.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #final-view.visible {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: auto;
+    }
+
+    .glowing-heart-stage {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 26px;
+    }
+
+    .heart-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 158, 187, 0.35);
+      animation: rippleRing 3s ease-out infinite;
+    }
+
+    .heart-ring:nth-child(2) {
+      animation-delay: 1.5s;
+    }
+
+    @keyframes rippleRing {
+      0% { transform: scale(0.75); opacity: 0.85; }
+      100% { transform: scale(1.65); opacity: 0; }
+    }
+
+    .big-heart-svg {
+      width: 104px;
+      height: 104px;
+      filter: drop-shadow(0 0 24px rgba(255, 107, 157, 0.85)) drop-shadow(0 0 48px rgba(255, 158, 187, 0.45));
+      animation: heartPulse 1.8s ease-in-out infinite;
+    }
+
+    @keyframes heartPulse {
+      0%, 100% { transform: scale(1); }
+      25% { transform: scale(1.12); }
+      45% { transform: scale(1.02); }
+      65% { transform: scale(1.09); }
+    }
+
+    .final-title {
+      font-size: 27px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      background: linear-gradient(90deg, #ffd6e4 0%, #fff6d6 50%, #ff9ebb 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 2px 16px rgba(255, 158, 187, 0.45));
+      margin-bottom: 12px;
+    }
+
+    .final-sub {
+      font-size: 15px;
+      color: rgba(255, 240, 246, 0.82);
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+
+    .replay-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(246, 220, 166, 0.35);
+      color: var(--gold-warm);
+      padding: 10px 22px;
+      border-radius: 999px;
+      font-family: 'Gowun Batang', serif;
+      font-size: 13.5px;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: background 0.25s ease;
+    }
+
+    .replay-btn:active {
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    @media (max-height: 670px) {
+      .letter-paper {
+        padding: 20px 18px 18px;
+        max-height: 78vh;
+      }
+      .letter-body {
+        font-size: 14px;
+        line-height: 1.74;
+      }
+      .concept-ko {
+        font-size: 17px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Twinkling Stars, Floating Pink/White Hearts & Glowing Particles -->
+  <canvas id="nightCanvas"></canvas>
+
+  <!-- Glowing Moon -->
+  <div class="moon-container">
+    <div class="moon-halo"></div>
+    <div class="moon-disc"></div>
+  </div>
+
+  <!-- Soft Night Clouds -->
+  <div class="clouds-layer">
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+    <div class="cloud cloud-3"></div>
+  </div>
+
+  <!-- Delicate Animated Night Flowers -->
+  <div class="garden-floor">
+    <svg class="flower-cluster" viewBox="0 0 160 140" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-slow">
+        <path d="M38,140 Q34,95 28,58" stroke="#4a7c6f" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+        <path d="M35,108 Q18,98 14,106 Q24,116 35,108 Z" fill="#3b695d"/>
+        <g transform="translate(28, 56)">
+          <circle cx="0" cy="-9" r="7" fill="#ff9ebb" opacity="0.88"/>
+          <circle cx="9" cy="-2" r="7" fill="#ffb3c6" opacity="0.88"/>
+          <circle cx="6" cy="8" r="7" fill="#ff8fab" opacity="0.88"/>
+          <circle cx="-6" cy="8" r="7" fill="#ffb3c6" opacity="0.88"/>
+          <circle cx="-9" cy="-2" r="7" fill="#ff9ebb" opacity="0.88"/>
+          <circle cx="0" cy="0" r="4.5" fill="#fff3b0"/>
+        </g>
+      </g>
+      <g class="sway-slow-delay">
+        <path d="M78,140 Q82,102 88,72" stroke="#4a7c6f" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        <path d="M81,114 Q98,104 102,112 Q92,121 81,114 Z" fill="#3b695d"/>
+        <g transform="translate(88, 70)">
+          <circle cx="0" cy="-7" r="5.8" fill="#fff0f5" opacity="0.9"/>
+          <circle cx="7" cy="-2" r="5.8" fill="#ffd6e0" opacity="0.9"/>
+          <circle cx="4" cy="6" r="5.8" fill="#fff0f5" opacity="0.9"/>
+          <circle cx="-4" cy="6" r="5.8" fill="#ffd6e0" opacity="0.9"/>
+          <circle cx="-7" cy="-2" r="5.8" fill="#fff0f5" opacity="0.9"/>
+          <circle cx="0" cy="0" r="3.6" fill="#ffd166"/>
+        </g>
+      </g>
+    </svg>
+
+    <svg class="flower-cluster" viewBox="0 0 160 140" xmlns="http://www.w3.org/2000/svg">
+      <g class="sway-slow-delay">
+        <path d="M82,140 Q76,104 70,74" stroke="#4a7c6f" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        <path d="M78,116 Q62,106 58,114 Q68,122 78,116 Z" fill="#3b695d"/>
+        <g transform="translate(70, 72)">
+          <circle cx="0" cy="-7" r="5.8" fill="#fff0f5" opacity="0.9"/>
+          <circle cx="7" cy="-2" r="5.8" fill="#ffd6e0" opacity="0.9"/>
+          <circle cx="4" cy="6" r="5.8" fill="#fff0f5" opacity="0.9"/>
+          <circle cx="-4" cy="6" r="5.8" fill="#ffd6e0" opacity="0.9"/>
+          <circle cx="-7" cy="-2" r="5.8" fill="#fff0f5" opacity="0.9"/>
+          <circle cx="0" cy="0" r="3.6" fill="#ffd166"/>
+        </g>
+      </g>
+      <g class="sway-slow">
+        <path d="M122,140 Q126,95 132,56" stroke="#4a7c6f" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+        <path d="M125,108 Q142,98 146,106 Q136,116 125,108 Z" fill="#3b695d"/>
+        <g transform="translate(132, 54)">
+          <circle cx="0" cy="-9" r="7" fill="#ff9ebb" opacity="0.88"/>
+          <circle cx="9" cy="-2" r="7" fill="#ffb3c6" opacity="0.88"/>
+          <circle cx="6" cy="8" r="7" fill="#ff8fab" opacity="0.88"/>
+          <circle cx="-6" cy="8" r="7" fill="#ffb3c6" opacity="0.88"/>
+          <circle cx="-9" cy="-2" r="7" fill="#ff9ebb" opacity="0.88"/>
+          <circle cx="0" cy="0" r="4.5" fill="#fff3b0"/>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <!-- Main Interactive Stage -->
+  <main class="stage">
+    <!-- Top Header -->
+    <header id="concept-header" class="concept-header">
+      <div class="concept-en">Sweet Dreams Tonight</div>
+      <h1 class="concept-ko">오늘 밤도 누나의 꿈이 예쁘길</h1>
+    </header>
+
+    <!-- View 1: Envelope -->
+    <section id="envelope-view">
+      <div id="envelope" class="envelope-wrapper" role="button" tabindex="0" aria-label="편지 열기">
+        <div class="envelope-aura"></div>
+        <div class="envelope-body">
+          <div class="letter-peek">
+            <span>누나에게 보내는 밤의 편지 🌙</span>
+          </div>
+          <div class="pocket-left"></div>
+          <div class="pocket-right"></div>
+          <div class="pocket-bottom"></div>
+        </div>
+        <div class="envelope-flap"></div>
+        <div class="wax-seal">❤️</div>
+      </div>
+
+      <div class="tap-prompt">
+        <p>누나를 위한 작은 편지가 도착했어요</p>
+        <span>봉투를 살짝 터치해 열어보세요 ✨</span>
+      </div>
+    </section>
+
+    <!-- View 2: Heartfelt Good-Night Letter -->
+    <section id="letter-view">
+      <div class="letter-paper">
+        <div class="letter-ornament">✦ 🌙 ✦</div>
+        <div class="letter-body" id="letter-lines">
+          <p class="letter-line">누나~ ❤️</p>
+          <br>
+          <p class="letter-line">오늘도 누나 생각하면서 하루를 마무리해요.
+누나를 알게 된 후로 평범했던 하루도 특별해진 것 같아요.</p>
+          <br>
+          <p class="letter-line">오늘 밤은 아무 걱정 없이 편안하게 잠들었으면 좋겠어요.
+예쁜 꿈 꾸고, 내일은 오늘보다 더 많이 웃었으면 좋겠어요.</p>
+          <br>
+          <p class="letter-line">멀리 있어도 누나를 생각하는 마음은 항상 가까이에 있어요.</p>
+          <br>
+          <p class="letter-line">오늘도 수고 많았어요.
+따뜻한 꿈 꾸고 푹 자요.</p>
+          <br>
+          <p class="letter-line">잘 자요, 세상에서 가장 예쁜 누나 ❤️</p>
+        </div>
+        <div id="letter-signature" class="letter-signature">- 알리가</div>
+        <div id="next-btn-wrap" class="next-btn-wrap">
+          <button id="to-final-btn" class="goodnight-btn" type="button">마지막 인사 보기 🌙</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- View 3: Final Glowing Heart Screen -->
+    <section id="final-view">
+      <div class="glowing-heart-stage">
+        <div class="heart-ring"></div>
+        <div class="heart-ring"></div>
+        <svg class="big-heart-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="heartGrad" cx="35%" cy="30%" r="70%">
+              <stop offset="0%" stop-color="#ffd6e5"/>
+              <stop offset="45%" stop-color="#ff6b9d"/>
+              <stop offset="100%" stop-color="#c9184a"/>
+            </radialGradient>
+          </defs>
+          <path d="M50 86 C50 86 12 60 12 33 C12 20 22 11 34 11 C42 11 47 16 50 22 C53 16 58 11 66 11 C78 11 88 20 88 33 C88 60 50 86 50 86 Z" fill="url(#heartGrad)"/>
+        </svg>
+      </div>
+      <h2 class="final-title">잘 자요, 누나 ❤️</h2>
+      <p class="final-sub">오늘 밤도 달빛처럼 포근하고<br>예쁜 꿈만 꾸길 바랄게요.</p>
+      <button id="replay-btn" class="replay-btn" type="button">편지 다시 읽기</button>
+    </section>
+  </main>
+
+  <script>
+    const canvas = document.getElementById('nightCanvas');
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      initStars();
+    });
+
+    /* 1. Twinkling Stars */
+    let stars = [];
+    function initStars() {
+      stars = [];
+      const count = Math.min(110, Math.floor((width * height) / 5500));
+      for (let i = 0; i < count; i++) {
+        stars.push({
+          x: Math.random() * width,
+          y: Math.random() * height * 0.78,
+          r: Math.random() * 1.7 + 0.4,
+          phase: Math.random() * Math.PI * 2,
+          speed: Math.random() * 0.025 + 0.01,
+          gold: Math.random() > 0.72
+        });
+      }
+    }
+    initStars();
+
+    /* 2. Floating Pink & White Hearts + Glowing Particles */
+    const floaters = [];
+
+    class Floater {
+      constructor(type, x, y, burst = false) {
+        this.type = type; // 'heart' | 'spark'
+        this.x = x !== undefined ? x : Math.random() * width;
+        this.y = y !== undefined ? y : height + 20;
+        this.burst = burst;
+
+        if (type === 'heart') {
+          this.size = burst ? Math.random() * 9 + 7 : Math.random() * 8 + 6;
+          this.vx = burst ? (Math.random() - 0.5) * 4.5 : (Math.random() - 0.5) * 0.55;
+          this.vy = burst ? -(Math.random() * 3.5 + 1.4) : -(Math.random() * 0.85 + 0.45);
+          this.alpha = burst ? 1 : Math.random() * 0.45 + 0.35;
+          this.fade = burst ? 0.013 : 0.0016;
+          this.sway = Math.random() * Math.PI * 2;
+          this.isPink = Math.random() > 0.38;
+        } else {
+          this.size = Math.random() * 2.3 + 0.9;
+          this.vx = burst ? (Math.random() - 0.5) * 4 : (Math.random() - 0.5) * 0.3;
+          this.vy = burst ? (Math.random() - 0.5) * 4 : -(Math.random() * 0.45 + 0.15);
+          this.alpha = Math.random() * 0.8 + 0.2;
+          this.life = burst ? 65 : 9999;
+          this.phase = Math.random() * Math.PI * 2;
+        }
+      }
+
+      update() {
+        if (this.type === 'heart') {
+          this.sway += 0.022;
+          if (this.burst) this.vx *= 0.96;
+          this.x += this.vx + Math.sin(this.sway) * 0.45;
+          this.y += this.vy;
+          this.alpha -= this.fade;
+        } else {
+          this.phase += 0.04;
+          this.x += this.vx;
+          this.y += this.vy;
+          this.life--;
+        }
+      }
+
+      draw() {
+        ctx.save();
+        if (this.type === 'heart') {
+          ctx.translate(this.x, this.y);
+          ctx.globalAlpha = Math.max(0, this.alpha);
+          const color = this.isPink ? '#ff9ebb' : '#ffffff';
+          ctx.shadowColor = this.isPink ? '#ff6b9d' : '#fff3d6';
+          ctx.shadowBlur = 12;
+          ctx.fillStyle = color;
+          const s = this.size * 0.55;
+          ctx.beginPath();
+          ctx.moveTo(0, s * 0.6);
+          ctx.bezierCurveTo(-s * 1.4, -s * 0.6, -s * 0.6, -s * 1.7, 0, -s * 0.7);
+          ctx.bezierCurveTo(s * 0.6, -s * 1.7, s * 1.4, -s * 0.6, 0, s * 0.6);
+          ctx.fill();
+        } else {
+          const pulseAlpha = Math.max(0.1, this.alpha * (0.65 + 0.35 * Math.sin(this.phase)));
+          ctx.globalAlpha = pulseAlpha;
+          ctx.shadowColor = '#f6dca6';
+          ctx.shadowBlur = 10;
+          ctx.fillStyle = '#fff6db';
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+    }
+
+    for (let i = 0; i < 26; i++) {
+      floaters.push(new Floater('spark', Math.random() * width, Math.random() * height));
+    }
+    for (let i = 0; i < 10; i++) {
+      floaters.push(new Floater('heart', Math.random() * width, Math.random() * height));
+    }
+
+    function spawnBurst(x, y, count = 12) {
+      for (let i = 0; i < count; i++) {
+        floaters.push(new Floater('heart', x, y, true));
+        floaters.push(new Floater('spark', x, y, true));
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+
+      // Draw Twinkling Stars
+      for (const s of stars) {
+        s.phase += s.speed;
+        const alpha = 0.25 + 0.75 * (0.5 + 0.5 * Math.sin(s.phase));
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = s.gold ? '#ffe8b3' : '#ffffff';
+        ctx.shadowColor = s.gold ? '#f6dca6' : '#cfe2ff';
+        ctx.shadowBlur = 8;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // Continuous Ambient Floating Hearts
+      if (Math.random() < 0.055) {
+        floaters.push(new Floater('heart'));
+      }
+
+      for (let i = floaters.length - 1; i >= 0; i--) {
+        const f = floaters[i];
+        f.update();
+        f.draw();
+        if (
+          (f.type === 'heart' && (f.alpha <= 0 || f.y < -30)) ||
+          (f.type === 'spark' && f.life <= 0)
+        ) {
+          floaters.splice(i, 1);
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    /* Interactive Flow Controls */
+    const envelope = document.getElementById('envelope');
+    const envelopeView = document.getElementById('envelope-view');
+    const letterView = document.getElementById('letter-view');
+    const finalView = document.getElementById('final-view');
+    const conceptHeader = document.getElementById('concept-header');
+    const letterLines = document.querySelectorAll('.letter-line');
+    const letterSignature = document.getElementById('letter-signature');
+    const nextBtnWrap = document.getElementById('next-btn-wrap');
+    const toFinalBtn = document.getElementById('to-final-btn');
+    const replayBtn = document.getElementById('replay-btn');
+
+    let isOpened = false;
+
+    function openEnvelope() {
+      if (isOpened) return;
+      isOpened = true;
+
+      envelope.classList.add('opened');
+      spawnBurst(width * 0.5, height * 0.5, 16);
+
+      setTimeout(() => {
+        envelopeView.classList.add('hidden');
+        conceptHeader.classList.add('fade-out');
+        letterView.classList.add('visible');
+
+        letterLines.forEach((line, idx) => {
+          setTimeout(() => {
+            line.classList.add('show');
+          }, 300 + idx * 520);
+        });
+
+        const totalDelay = 300 + letterLines.length * 520;
+        setTimeout(() => {
+          letterSignature.classList.add('show');
+        }, totalDelay + 250);
+
+        setTimeout(() => {
+          nextBtnWrap.classList.add('show');
+        }, totalDelay + 750);
+      }, 1050);
+    }
+
+    envelope.addEventListener('click', openEnvelope);
+    envelope.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      openEnvelope();
+    }, { passive: false });
+
+    toFinalBtn.addEventListener('click', () => {
+      letterView.classList.remove('visible');
+      setTimeout(() => {
+        finalView.classList.add('visible');
+        spawnBurst(width * 0.5, height * 0.45, 22);
+      }, 450);
+    });
+
+    replayBtn.addEventListener('click', () => {
+      finalView.classList.remove('visible');
+      setTimeout(() => {
+        letterView.classList.add('visible');
+      }, 450);
+    });
+
+    // Gentle touch sparkle anywhere
+    document.addEventListener('pointerdown', (e) => {
+      spawnBurst(e.clientX, e.clientY, 5);
+    });
+  </script>
+</body>
+</html>
